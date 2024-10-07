@@ -1,0 +1,38 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+.container {
+  display: flex;
+  flex-wrap: wrap; /* Permite que las cajas se ajusten a la pantalla */
+  justify-content: space-between; /* Espaciado entre las cajas */
+  padding: 20px; /* Espaciado interno del contenedor */
+}
+
+.card {
+  background-color: #ffffff; /* Color de fondo de la caja */
+  border: 1px solid #e0e0e0; /* Borde de la caja */
+  border-radius: 12px; /* Bordes redondeados */
+  padding: 20px; /* Espaciado interno de la caja */
+  margin: 15px; /* Margen entre las cajas */
+  flex: 1 1 calc(45% - 30px); /* Dos cajas por fila con espacio entre ellas */
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1); /* Sombra para dar efecto de profundidad */
+  transition: transform 0.2s, box-shadow 0.2s; /* Transiciones para el efecto hover */
+  
+  h3 {
+    color: #a0a0a0; /* Color gris claro para el título */
+    font-family: 'Poppins', sans-serif; /* Fuente del título */
+    font-size: 1.8rem; /* Tamaño de fuente del título */
+    margin-bottom: 15px; /* Espacio debajo del título */
+  }
+
+  p {
+    color: #444; /* Color del texto */
+    font-family: 'Poppins', sans-serif; /* Fuente del texto */
+    font-size: 1.1rem; /* Tamaño de fuente del texto */
+    line-height: 1.6; /* Espaciado entre líneas */
+  }
+
+  &:hover {
+    transform: translateY(-4px); /* Efecto hover */
+    box-shadow: 0 6px 15px rgba(0, 0, 0, 0.15); /* Aumenta la sombra en hover */
+  }
+}

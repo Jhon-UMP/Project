@@ -1,0 +1,20 @@
+<div class="logo-container" (click)="toggleMenu()">
+    <img src="/logo-icon-person-on-white-background-free-vector.jpg" alt="Financial Coach Logo" class="logo-img">
+  
+    <!-- Menú desplegable -->
+    <div class="dropdown-menu" *ngIf="isMenuOpen">
+      <button class="dropdown-button" (click)="toggleConfigMenu($event)">Configuración</button>
+  
+      <!-- Submenú de cambiar contraseña -->
+      <div *ngIf="isConfigMenuOpen" class="dropdown-submenu">
+        <button class="dropdown-button" (click)="showChangePasswordForm()">Cambiar contraseña</button>
+  
+        <!-- Formulario para cambiar contraseña -->
+        <div *ngIf="isChangePasswordFormVisible" class="change-password-form">
+          <input [(ngModel)]="newPassword" type="password" placeholder="Nueva contraseña" />
+          <button class="dropdown-button" (click)="changePassword()">Guardar</button>
+        </div>        
+      </div>
+    </div>
+  </div>
+  

@@ -1,0 +1,69 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;600&display=swap'); // Importamos la fuente Poppins
+
+.nosotros {
+  padding: 40px;
+  background-color: #f9f9f9;
+  border-radius: 10px;
+  box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
+  font-family: 'Poppins', sans-serif; // Aplicamos la nueva fuente
+
+  h1 {
+    font-size: 2.5em;
+    color: #333;
+    text-align: center;
+    margin-bottom: 20px;
+    font-weight: 600; // Usamos un peso más grueso para el título
+  }
+
+  .intro {
+    text-align: center;
+    font-size: 1.2em;
+    color: #999; // Un gris más claro para el texto de introducción
+    margin-bottom: 40px;
+    font-weight: 300; // Ligero peso para el párrafo
+  }
+
+  .content {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 20px;
+
+    .card {
+      background-color: #fff;
+      border-radius: 8px;
+      box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      padding: 20px;
+      flex: 1 1 300px;
+      max-width: 350px;
+      transition: transform 0.3s;
+      font-weight: 400; // Peso regular para el contenido
+
+      h2 {
+        font-size: 1.5em;
+        color: #444;
+        margin-bottom: 15px;
+        font-weight: 600; // Grueso para los títulos de las tarjetas
+      }
+
+      p {
+        font-size: 1.1em;
+        color: #777;
+        line-height: 1.6;
+        font-weight: 300; // Ligero peso para el texto
+      }
+
+      &:hover {
+        transform: translateY(-5px);
+      }
+    }
+  }
+
+  .footer {
+    text-align: center;
+    margin-top: 40px;
+    font-size: 1.2em;
+    color: #333;
+    font-weight: 600; // Grueso para destacar el texto final
+  }
+}

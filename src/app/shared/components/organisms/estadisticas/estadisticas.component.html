@@ -1,0 +1,19 @@
+<div class="chart-container">
+  <!-- Gráfico de Pie -->
+  <google-chart 
+    [type]="chartTypePie" 
+    [data]="chartDataPie" 
+    [columns]="chartColumns"
+    [options]="chartOptionsPie"
+    class="chart">
+  </google-chart>
+
+  <!-- Gráfico de Barras -->
+  <google-chart 
+    [type]="chartTypeBar" 
+    [data]="chartDataBar" 
+    [columns]="chartColumns" 
+    [options]="chartOptionsBar" 
+    class="chart">
+  </google-chart>
+</div>

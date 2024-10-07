@@ -1,0 +1,14 @@
+<!-- Header global -->
+<app-headersinlog></app-headersinlog>
+
+<!-- Estructura principal con el sidebar y la sección de contenido -->
+<div class="main-layout">
+  <!-- Sidebar -->
+  <app-sidebar-menu></app-sidebar-menu>
+
+  <!-- Área de contenido dinámico -->
+  <div class="content-area">
+    <!-- Aquí se cargan las vistas de cada ruta interna -->
+    <router-outlet></router-outlet>
+  </div>
+</div>

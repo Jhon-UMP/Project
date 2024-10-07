@@ -1,0 +1,17 @@
+<div *ngIf="chatbotVisible" class="chatbot-container">
+  <div class="chatbot-content">
+    <div id="chatbox">
+      <!-- Mostrar todos los mensajes -->
+      <div *ngFor="let message of messages" [ngClass]="{ 'user-message': message.sender === 'user', 'bot-message': message.sender === 'bot' }" class="chatbot-message">
+        <!-- Imagen para el bot, solo aparece si el mensaje es del bot -->
+        <img *ngIf="message.sender === 'bot'" src="/OIP.jpg" alt="Chatbot Avatar" class="bot-avatar" />
+        <p class="message-text">{{ message.text }}</p>
+      </div>
+    </div>
+    <div class="chatbot-footer">
+      <input type="text" [(ngModel)]="userMessage" placeholder="Escribe tu mensaje..." />
+      <button (click)="sendMessage()">Enviar</button>
+    </div>
+  </div>
+  <button class="close-chatbot" (click)="toggleChatbot()">Cerrar</button>
+</div>

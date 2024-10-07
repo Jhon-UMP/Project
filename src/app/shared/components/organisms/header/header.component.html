@@ -1,0 +1,23 @@
+<header class="header">
+    <div class="header__logo">
+      <app-logogen></app-logogen> 
+    </div>
+    <nav class="header__nav">
+      <ul>
+        <li><a routerLink="/nosotros" routerLinkActive="active">Nosotros</a></li>
+        <li><a routerLink="/servicios" routerLinkActive="active">Servicios</a></li>
+      </ul>
+    </nav>
+    <div class="header__auth">
+      <app-logoper></app-logoper>
+    </div>
+  </header>
+  
+  <div class="main-layout">
+    <app-sidebar-menu></app-sidebar-menu>
+    
+    <div class="content-area">
+      <router-outlet></router-outlet> 
+    </div>
+  </div>
+  

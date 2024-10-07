@@ -1,0 +1,72 @@
+<div class="container">
+  <div class="ingreso-total">
+    <h3>Ingreso Total:</h3>
+    <div class="editable">
+      <input [(ngModel)]="ingresoTotal" [readonly]="!isIngresoEditable" type="number" />
+      <button (click)="editIngreso()">{{ isIngresoEditable ? 'Guardar' : 'Editar' }}</button>
+    </div>
+  </div>
+
+  <div class="gastos-principales">
+    <h4>Gastos Principales:
+      <button (click)="toggleAgregarGasto('principal')" class="add-btn">+</button>
+    </h4>
+
+    <!-- Sección de agregar gasto principal -->
+    <div *ngIf="mostrarAgregarGastoPrincipal" class="gasto-item">
+      <span>Nombre del gasto:</span>
+      <div class="editable">
+        <input [(ngModel)]="nuevoGasto.nombre" type="text" placeholder="Nuevo gasto" />
+      </div>
+      <span>Monto:</span>
+      <div class="editable">
+        <input [(ngModel)]="nuevoGasto.monto" type="number" placeholder="Monto" />
+        <button (click)="agregarGasto('principal')">Agregar</button>
+      </div>
+    </div>
+
+    <!-- Gastos principales existentes -->
+    <div class="gasto-item" *ngFor="let gasto of gastosPrincipales">
+      <span>{{ gasto.nombre }}:</span>
+      <div class="editable">
+        <input [(ngModel)]="gasto.monto" [readonly]="!gasto.isEditable" type="number" />
+        <button (click)="editGasto(gasto)">{{ gasto.isEditable ? 'Guardar' : 'Editar' }}</button>
+        <button (click)="deleteGasto(gasto, 'principal')" class="delete-btn">Eliminar</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="gastos-secundarios">
+    <h4>Gastos Secundarios:
+      <button (click)="toggleAgregarGasto('secundario')" class="add-btn">+</button>
+    </h4>
+
+    <!-- Sección de agregar gasto secundario -->
+    <div *ngIf="mostrarAgregarGastoSecundario" class="gasto-item">
+      <span>Nombre del gasto:</span>
+      <div class="editable">
+        <input [(ngModel)]="nuevoGasto.nombre" type="text" placeholder="Nuevo gasto" />
+      </div>
+      <span>Monto:</span>
+      <div class="editable">
+        <input [(ngModel)]="nuevoGasto.monto" type="number" placeholder="Monto" />
+        <button (click)="agregarGasto('secundario')">Agregar</button>
+      </div>
+    </div>
+
+ 
+    <div class="gasto-item" *ngFor="let gasto of gastosSecundarios">
+      <span>{{ gasto.nombre }}:</span>
+      <div class="editable">
+        <input [(ngModel)]="gasto.monto" [readonly]="!gasto.isEditable" type="number" />
+        <button (click)="editGasto(gasto)">{{ gasto.isEditable ? 'Guardar' : 'Editar' }}</button>
+        <button (click)="deleteGasto(gasto, 'secundario')" class="delete-btn">Eliminar</button>
+      </div>
+    </div>
+  </div> 
+
+  <div class="ingreso-total-restante">
+    <h3>Ingreso Total Restante:</h3>
+    <p>{{ calcularIngresoRestante() | currency }}</p>
+  </div>
+</div>

@@ -1,0 +1,19 @@
+<div class="plan-ahorro">
+    <h1>Crear plan de ahorro</h1>
+  
+    <!-- Botón para crear un nuevo movimiento -->
+    <div class="crear-movimiento">
+      <button (click)="crearMovimiento()">Crear nuevo Plan de Ahorro</button>
+    </div>
+  
+    <!-- Bloques de movimientos -->
+    <div *ngFor="let movimiento of movimientos; let i = index" class="movimiento">
+      <div class="info-movimiento">
+        <span class="fecha">{{ movimiento.fecha }}</span>
+        <input type="text" [(ngModel)]="movimiento.descripcion" class="descripcion-input" />
+      </div>
+      <input type="number" [(ngModel)]="movimiento.monto" class="monto-input" />
+      <button (click)="eliminarMovimiento(i)">Eliminar</button>
+    </div>
+  </div>
+  

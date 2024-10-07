@@ -1,0 +1,28 @@
+li {
+  margin-bottom: 15px;
+
+  a {
+    display: block;
+    padding: 15px 15px;
+    font-size: 16px;
+    color: #a7a7a7;
+    text-decoration: none;
+    border-radius: 10px;
+    background-color: #f0f0f0;  // Fondo gris claro
+    text-align: center; // Centra el texto
+    transition: all 0.3s ease; // Transiciones suaves para hover y active
+
+    &:hover {
+      background-color: #e0e0e0;  // Cambia el fondo en hover
+      color: #000; // Cambia el color del texto al pasar el cursor
+      cursor: pointer;
+    }
+
+    &.active {
+      background-color: #cecece;
+      color: #fff;
+      font-weight: bold;
+      border: 1px solid #b0b0b0; // Añade borde suave al botón activo
+    }
+  }
+}
