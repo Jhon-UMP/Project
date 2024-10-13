@@ -3,9 +3,11 @@ const bodyParser = require('body-parser');
 const jwt = require('jsonwebtoken');
 const cors = require('cors');
 const mysql = require('mysql2');
+const bcrypt = require('bcrypt'); // Para encriptar contraseñas
+require('dotenv').config(); // Para manejar variables de entorno
 
 const app = express();
-const PORT = 3000; // Puerto en el que correrá tu backend
+const PORT = process.env.PORT || 3000; // Puerto en el que correrá tu backend
 
 // Middleware
 app.use(cors());
@@ -13,10 +15,10 @@ app.use(bodyParser.json());
 
 // Configuración de conexión a la base de datos
 const connection = mysql.createConnection({
-  host: 'localhost',
-  user: 'root',
-  password: '',
-  database: 'users_db' // Asegúrate de que sea el nombre correcto de tu DB
+  host: process.env.DB_HOST || 'localhost',
+  user: process.env.DB_USER || 'root',
+  password: process.env.DB_PASSWORD || '',
+  database: process.env.DB_NAME || 'users_db' // Asegúrate de que sea el nombre correcto de tu DB
 });
 
 // Conectar a la base de datos
@@ -33,30 +35,39 @@ app.post('/login', (req, res) => {
   const { email, password } = req.body;
 
   connection.query(
-    'SELECT * FROM users WHERE email = ? AND password = ?',
-    [email, password],
-    (err, results) => {
+    'SELECT * FROM users WHERE email = ?',
+    [email],
+    async (err, results) => {
       if (err) {
         return res.status(500).json({ error: 'Error en la base de datos' });
       }
       if (results.length > 0) {
-        // Generar un token JWT
-        const token = jwt.sign({ email }, 'secreto_del_token', { expiresIn: '1h' });
-        res.json({ token });
+        // Comprobar la contraseña con bcrypt
+        const validPassword = await bcrypt.compare(password, results[0].password);
+        if (validPassword) {
+          // Generar un token JWT
+          const token = jwt.sign({ email }, process.env.JWT_SECRET || 'secreto_del_token', { expiresIn: '1h' });
+          res.json({ token });
+        } else {
+          res.status(401).json({ error: 'Credenciales incorrectas' });
+        }
       } else {
-        res.status(401).json({ error: 'Credenciales incorrectas' });
+        res.status(401).json({ error: 'Usuario no encontrado' });
       }
     }
   );
 });
 
 // Ruta para el registro
-app.post('/register', (req, res) => {
+app.post('/register', async (req, res) => {
   const { email, password } = req.body;
 
   if (!email || !password) {
     return res.status(400).json({ error: 'Correo y contraseña son obligatorios' });
   }
+
+  // Encriptar la contraseña
+  const hashedPassword = await bcrypt.hash(password, 10);
 
   // Verificar si el correo ya está registrado
   connection.query('SELECT * FROM users WHERE email = ?', [email], (err, results) => {
@@ -70,7 +81,7 @@ app.post('/register', (req, res) => {
     // Insertar el nuevo usuario
     connection.query(
       'INSERT INTO users (email, password) VALUES (?, ?)',
-      [email, password],
+      [email, hashedPassword], // Guardar la contraseña encriptada
       (err) => {
         if (err) {
           return res.status(500).json({ error: 'Error al registrar el usuario' });
@@ -82,12 +93,15 @@ app.post('/register', (req, res) => {
 });
 
 // Ruta para cambiar la contraseña
-app.post('/change-password', (req, res) => {
+app.post('/change-password', async (req, res) => {
   const { email, newPassword } = req.body;
+
+  // Encriptar la nueva contraseña
+  const hashedNewPassword = await bcrypt.hash(newPassword, 10);
 
   connection.query(
     'UPDATE users SET password = ? WHERE email = ?',
-    [newPassword, email],
+    [hashedNewPassword, email],
     (err) => {
       if (err) {
         return res.status(500).json({ error: 'Error al cambiar la contraseña' });
@@ -105,12 +119,40 @@ app.get('/protected', (req, res) => {
     return res.status(401).json({ error: 'Token no proporcionado' });
   }
 
-  jwt.verify(token, 'secreto_del_token', (err, decoded) => {
+  jwt.verify(token, process.env.JWT_SECRET || 'secreto_del_token', (err, decoded) => {
     if (err) {
       return res.status(401).json({ error: 'Token inválido' });
     }
     res.json({ message: 'Acceso concedido', email: decoded.email });
   });
+});
+
+// Rutas para gastos
+app.get('/api/gastos', (req, res) => {
+  connection.query('SELECT * FROM gastos', (err, results) => {
+    if (err) {
+      return res.status(500).json({ error: 'Error al obtener los gastos' });
+    }
+    res.status(200).json(results);
+  });
+});
+
+app.post('/api/gastos', (req, res) => {
+  const { nombre, monto } = req.body;
+  if (!nombre || !monto) {
+    return res.status(400).json({ error: 'Nombre y monto son obligatorios' });
+  }
+  
+  connection.query(
+    'INSERT INTO gastos (nombre, monto) VALUES (?, ?)',
+    [nombre, monto],
+    (err) => {
+      if (err) {
+        return res.status(500).json({ error: 'Error al agregar el gasto' });
+      }
+      res.status(201).json({ success: true });
+    }
+  );
 });
 
 // Iniciar el servidor

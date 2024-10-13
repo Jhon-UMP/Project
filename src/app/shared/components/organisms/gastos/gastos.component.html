@@ -12,7 +12,6 @@
       <button (click)="toggleAgregarGasto('principal')" class="add-btn">+</button>
     </h4>
 
-    <!-- Sección de agregar gasto principal -->
     <div *ngIf="mostrarAgregarGastoPrincipal" class="gasto-item">
       <span>Nombre del gasto:</span>
       <div class="editable">
@@ -25,7 +24,6 @@
       </div>
     </div>
 
-    <!-- Gastos principales existentes -->
     <div class="gasto-item" *ngFor="let gasto of gastosPrincipales">
       <span>{{ gasto.nombre }}:</span>
       <div class="editable">
@@ -41,7 +39,6 @@
       <button (click)="toggleAgregarGasto('secundario')" class="add-btn">+</button>
     </h4>
 
-    <!-- Sección de agregar gasto secundario -->
     <div *ngIf="mostrarAgregarGastoSecundario" class="gasto-item">
       <span>Nombre del gasto:</span>
       <div class="editable">
@@ -54,7 +51,6 @@
       </div>
     </div>
 
- 
     <div class="gasto-item" *ngFor="let gasto of gastosSecundarios">
       <span>{{ gasto.nombre }}:</span>
       <div class="editable">
@@ -70,3 +66,4 @@
     <p>{{ calcularIngresoRestante() | currency }}</p>
   </div>
 </div>
+

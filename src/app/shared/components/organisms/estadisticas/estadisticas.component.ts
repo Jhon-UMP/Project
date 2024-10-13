@@ -1,81 +1,62 @@
-import { Component } from '@angular/core';
-import { ChartType } from 'angular-google-charts';
+import { Component, OnInit } from '@angular/core';
+import { GastosService } from 'auth-backend/services/gastos.service';
+
+interface Gasto {
+  nombre: string;
+  monto: number;
+}
 
 @Component({
   selector: 'app-estadisticas',
   templateUrl: './estadisticas.component.html',
   styleUrls: ['./estadisticas.component.scss']
 })
-export class EstadisticasComponent {
-  // Datos iniciales para los gráficos (gastos principales y secundarios)
-  public chartDataPie = [
-    ['Gasto', 'Monto (en pesos)'],
-    ['Energía', 2000],
-    ['Agua', 1500],
-    ['Gas', 1000],
-    ['Mercado', 5000],
-    ['Internet', 2500],
-    ['Servicio de Televisión y señal', 3000]
-  ];
-
-  public chartDataBar = [
-    ['Energía', 2000],
-    ['Agua', 52000],
-    ['Gas', 45000],
-    ['Mercado', 500000],
-    ['Internet', 80000],
-    ['Servicio de Televisión y señal', 56500]
-  ];
-
-  // Columnas del gráfico
-  public chartColumns = [
-    { id: 'gasto', label: 'Gasto', type: 'string' },
-    { id: 'monto', label: 'Monto', type: 'number' },
-  ];
-
-  // Opciones para el gráfico de pie
-  public chartOptionsPie = {
-    pieHole: 0.4,
-    width: 800,
-    height: 600,
-    colors: ['#FF9999', '#66B3FF', '#99FF99', '#FFCC99', '#C2C2F0', '#FFB3E6'],
-    tooltip: { trigger: 'focus', isHtml: true },  // Mostrar montos en el tooltip
-    pieSliceText: 'none'  // No mostrar el texto en el gráfico (solo en el tooltip)
-  };
-
-  // Opciones para el gráfico de barras
-  public chartOptionsBar = {
-    hAxis: { title: 'Gasto' },
-    vAxis: { 
-      title: 'Monto en pesos',  // Título del eje vertical
-      minValue: 0,  // Valor mínimo del eje
-      maxValue: 6000,  // Valor máximo del eje basado en los montos
-      ticks: [100000, 200000, 300000, 400000, 500000, 600000]  // Niveles de precios en pesos
+export class EstadisticasComponent implements OnInit {
+  gastos: Gasto[] = [];
+  chartData: number[] = []; 
+  chartLabels: string[] = []; 
+  chartOptions: any = {
+    responsive: true,
+    plugins: {
+      legend: {
+        position: 'top'
+      },
+      title: {
+        display: true,
+        text: 'Estadísticas de Gastos'
+      }
     },
-    width: 800,
-    height: 600,
-    colors: ['#808080'],  // Color gris para las barras
-    tooltip: { isHtml: true, trigger: 'focus' }  // Mostrar el monto al pasar el cursor
+    scales: {
+      y: {
+        beginAtZero: true,
+        title: {
+          display: true,
+          text: 'Monto'
+        }
+      }
+    }
   };
 
-  // Tipos de gráficos
-  public chartTypePie: ChartType = ChartType.PieChart;
-  public chartTypeBar: ChartType = ChartType.ColumnChart;
+  constructor(private gastosService: GastosService) {}
 
-  // Nuevo gasto a agregar
-  nuevoGasto: { nombre: string; monto: number } = { nombre: '', monto: 0 };
+  ngOnInit(): void {
+    this.obtenerGastosYActualizarGrafica();
+  }
 
-  constructor() {}
+  obtenerGastosYActualizarGrafica(): void {
+    this.gastosService.getGastos().subscribe(
+      (response: Gasto[]) => {
+        this.gastos = response;
+        this.actualizarGrafica();
+      },
+      (error) => {
+        console.error('Error al obtener los gastos:', error);
+      }
+    );
+  }
 
-  // Función para agregar un nuevo gasto
-  agregarGasto() {
-    if (this.nuevoGasto.nombre && this.nuevoGasto.monto > 0) {
-      // Agregar el nuevo gasto a los datos del gráfico
-      this.chartDataPie.push([this.nuevoGasto.nombre, this.nuevoGasto.monto]);
-      this.chartDataBar.push([this.nuevoGasto.nombre, this.nuevoGasto.monto]);
-
-      // Reiniciar el formulario del nuevo gasto
-      this.nuevoGasto = { nombre: '', monto: 0 };
-    }
+  actualizarGrafica(): void {
+    this.chartLabels = this.gastos.map(gasto => gasto.nombre);
+    this.chartData = this.gastos.map(gasto => gasto.monto);
   }
 }

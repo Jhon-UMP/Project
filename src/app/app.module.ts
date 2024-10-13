@@ -1,28 +1,30 @@
-import { NgModule, CUSTOM_ELEMENTS_SCHEMA } from '@angular/core';
+import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
 import { AppRoutingModule } from './app-routing.module';
 import { AppComponent } from './app.component';
 import { SharedModule } from './shared/shared.module';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { GoogleChartsModule } from 'angular-google-charts';
-import { HttpClientModule } from '@angular/common/http'; // Asegúrate de que sea HttpClientModule
+import { HttpClientModule } from '@angular/common/http';
+import { GastosService } from '../../auth-backend/services/gastos.service'; // Asegúrate de que esta ruta sea correcta
 
 @NgModule({
   declarations: [
     AppComponent,
-    // Aquí puedes agregar otros componentes que declares en tu aplicación
+    // EstadisticasComponent se elimina de aquí
   ],
   imports: [
     BrowserModule,
     AppRoutingModule,
     SharedModule,
-    FormsModule,          // Permite el uso de formularios reactivos
-    ReactiveFormsModule,  // Permite el uso de formularios reactivos
-    GoogleChartsModule,   // Permite usar gráficos de Google
-    HttpClientModule,     // Permite realizar solicitudes HTTP
+    FormsModule,
+    ReactiveFormsModule,
+    GoogleChartsModule,
+    HttpClientModule,
   ],
-  providers: [],
-  bootstrap: [AppComponent],
-  schemas: [CUSTOM_ELEMENTS_SCHEMA], // Para permitir el uso de elementos personalizados
+  providers: [
+    GastosService
+  ],
+  bootstrap: [AppComponent]
 })
 export class AppModule { }

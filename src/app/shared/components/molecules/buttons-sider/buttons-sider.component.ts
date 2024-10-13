@@ -8,7 +8,6 @@ import { Component } from '@angular/core';
 export class ButtonsSiderComponent {
   sidebarButtons = [
     { label: 'Gastos', link: '/homedos/gastos' },
-    { label: 'Estadísticas', link: '/homedos/estadisticas' },
     { label: 'Plan de Ahorros', link: '/homedos/movimientos' },
     { label: '¿Necesitas Ayuda?', link: '/homedos/ayuda' }
   ];

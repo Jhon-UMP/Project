@@ -25,6 +25,9 @@ import { HomedosComponent } from './components/organisms/homedos/homedos.compone
 import { HeaderlogueadoComponent } from './components/organisms/headerlogueado/headerlogueado.component';
 import { ServiciosdosComponent } from './components/organisms/serviciosdos/serviciosdos.component';
 import { HeaderfalsoComponent } from './components/organisms/headerfalso/headerfalso.component';
+import { GastosSeccionComponent } from './components/organisms/gastos-seccion/gastos-seccion.component';
+import { EstadisticasSeccionComponent } from './components/organisms/estadisticas-seccion/estadisticas-seccion.component';
+import { GastosEstadisticasComponent } from './components/organisms/gastos-estadisticas/gastos-estadisticas.component';
 
 @NgModule({
   declarations: [
@@ -38,7 +41,7 @@ import { HeaderfalsoComponent } from './components/organisms/headerfalso/headerf
     AyudaComponent,
     InformegeneralComponent,
     GastosComponent,
-    EstadisticasComponent,
+    EstadisticasComponent, // Este componente se mantiene aquí
     LogoperComponent,
     HeadersinlogComponent,
     LoginComponent,
@@ -49,7 +52,10 @@ import { HeaderfalsoComponent } from './components/organisms/headerfalso/headerf
     HomedosComponent,
     HeaderlogueadoComponent,
     ServiciosdosComponent,
-    HeaderfalsoComponent
+    HeaderfalsoComponent,
+    GastosSeccionComponent,
+    EstadisticasSeccionComponent,
+    GastosEstadisticasComponent,
   ],
   imports: [
     CommonModule,
@@ -66,7 +72,8 @@ import { HeaderfalsoComponent } from './components/organisms/headerfalso/headerf
     HeadersinlogComponent,
     LoginComponent,
     RegisterComponent,
-    GoogleChartsModule
+    GoogleChartsModule,
+    EstadisticasComponent // Este componente se mantiene aquí
   ]
 })
 export class SharedModule { }

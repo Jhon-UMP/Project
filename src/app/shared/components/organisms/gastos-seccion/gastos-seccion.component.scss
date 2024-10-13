@@ -1,0 +1,101 @@
+.container {
+    background-color: #ffffff; // Fondo gris claro
+    padding: 20px;
+    font-family: 'Arial', sans-serif;
+  
+    h3 {
+      font-size: 28px; // Tamaño grande para el encabezado
+      color: #ababab; // Color del texto
+      margin-bottom: 15px; // Espaciado inferior
+      text-align: center; // Centrar el texto
+      font-weight: bold; // Negrita
+    }
+  
+    h4 {
+      font-size: 24px; // Tamaño para subtítulos
+      color: #ababab; // Color gris oscuro
+      margin: 10px 0; // Espaciado vertical
+      text-align: center; // Centrar el texto
+      font-weight: bold; // Negrita
+    }
+  
+    .editable {
+      display: flex;
+      justify-content: center; // Centrar horizontalmente
+      margin-bottom: 20px; // Espaciado inferior
+  
+      input {
+        margin-right: 10px; // Espaciado derecho para inputs
+        padding: 12px; // Espaciado interno
+        border: 1px solid #ccc; // Bordes gris claro
+        border-radius: 4px; // Bordes redondeados
+        font-size: 20px; // Tamaño de la fuente
+        width: 200px; // Ancho fijo
+        box-shadow: 0 1px 2px rgba(0, 0, 0, 0.1); // Sombra para inputs
+        background-color: #fff; // Fondo blanco para los inputs
+      }
+  
+      button {
+        background-color: #333; // Color de fondo negro
+        color: white; // Color del texto del botón
+        border: none; // Sin borde
+        border-radius: 4px; // Bordes redondeados
+        padding: 12px 20px; // Espaciado interno
+        cursor: pointer; // Cursor en forma de puntero
+        transition: background-color 0.3s; // Transición de color
+  
+        &:hover {
+          background-color: #555; // Color de fondo al pasar el cursor
+        }
+      }
+    }
+  
+    .gasto-item {
+      display: flex;
+      justify-content: space-between; // Espaciado entre nombre y monto
+      align-items: center; // Centrar verticalmente
+      padding: 10px 0; // Espaciado superior e inferior
+      border-bottom: 1px solid #ddd; // Línea inferior gris claro
+  
+      span {
+        font-size: 22px; // Tamaño de la fuente
+        color: #444; // Color del texto
+      }
+  
+      // Espaciado entre los botones
+      .edit-btn {
+        margin-right: 15px; // Espaciado más grande entre los botones
+      }
+  
+      button {
+        margin-right: 10px; // Espaciado entre botones
+      }
+    }
+  
+    .delete-btn {
+      background-color: #dc3545; // Color de fondo para el botón de eliminar
+      padding: 8px 12px; // Espaciado interno
+      border-radius: 4px; // Bordes redondeados
+      color: white; // Color del texto
+  
+      &:hover {
+        background-color: #c82333; // Color al pasar el cursor
+      }
+    }
+  
+    .ingreso-total-restante {
+      margin-top: 30px; // Espaciado superior
+      h3 {
+        font-size: 28px; // Tamaño de fuente para el total restante
+        text-align: center; // Centrar el texto
+        color: #9e9e9e; // Color gris oscuro
+      }
+      p {
+        font-size: 32px; // Tamaño de fuente grande para el valor
+        font-weight: bold; // Negrita
+        color: #333; // Color del texto
+        text-align: center; // Centrar el texto
+      }
+    }
+  }
+  
