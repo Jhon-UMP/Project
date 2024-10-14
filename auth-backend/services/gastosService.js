@@ -15,14 +15,10 @@ const addGasto = (gasto) => {
     } else {
         throw new Error('Datos del gasto inválidos'); // Lanza un error si los datos son inválidos
     }
-    
 };
-
 
 // Exporta las funciones para ser utilizadas en otros módulos
 module.exports = {
     getAllGastos,
     addGasto
 };
-
-

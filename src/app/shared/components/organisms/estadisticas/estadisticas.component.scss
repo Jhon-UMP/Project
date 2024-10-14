@@ -1,5 +1,12 @@
 .chart-container {
-  position: relative;
-  margin: auto;
-  max-width: 800px; // Ajusta el ancho según tus necesidades
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+
+}
+
+.chart {
+  width: 100%;    // Ajusta el ancho del gráfico al 100% del contenedor
+  max-width: 800px; // Ancho máximo del gráfico
+  height: 1px;    // Altura del gráfico
 }

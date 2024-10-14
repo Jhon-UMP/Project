@@ -1,5 +1,5 @@
 import { Component, OnInit, Output, EventEmitter } from '@angular/core';
-import { GastosService } from 'auth-backend/services/gastos.service'; // Ruta correcta para importar el servicio
+import { GastosService } from 'auth-backend/services/gastos.service'; // Asegúrate de que la ruta sea correcta
 
 // Definir la interfaz Gasto
 interface Gasto {
@@ -28,12 +28,13 @@ export class GastosComponent implements OnInit {
   gastosPrincipales: Gasto[] = [];
   gastosSecundarios: Gasto[] = [];
 
-  constructor(private gastosService: GastosService) {} // Inyección del servicio
+  constructor(private gastosService: GastosService) {}
 
   ngOnInit(): void {
     this.recuperarGastos(); // Recuperar gastos desde localStorage
+    // Solo cargar gastos del backend si no hay gastos en localStorage
     if (this.gastosPrincipales.length === 0 && this.gastosSecundarios.length === 0) {
-      this.cargarGastos(); // Solo cargar gastos del backend si no hay gastos en localStorage
+      this.cargarGastos(); 
     }
     this.recuperarIngresoTotal(); // Recuperar el ingreso total desde localStorage
     this.emitirGastosActualizados();
@@ -63,6 +64,7 @@ export class GastosComponent implements OnInit {
     if (!this.isIngresoEditable) {
       this.actualizarIngresoRestante();
       this.guardarIngresoTotal();
+      this.emitirGastosActualizados(); // Emitir actualizaciones después de guardar
     }
   }
 
@@ -98,7 +100,7 @@ export class GastosComponent implements OnInit {
           this.guardarGastos(); // Guardar en localStorage
           this.nuevoGasto = { nombre: '', monto: 0, tipo: '', isEditable: false }; // Reiniciar el gasto nuevo
           this.actualizarIngresoRestante();
-          this.emitirGastosActualizados();
+          this.emitirGastosActualizados(); // Emitir actualizaciones después de agregar
         },
         (error) => {
           console.error('Error al agregar gasto:', error); // Manejo del error al agregar gasto
@@ -112,7 +114,7 @@ export class GastosComponent implements OnInit {
     if (!gasto.isEditable) {
       this.actualizarIngresoRestante();
       this.guardarGastos(); // Guardar en localStorage
-      this.emitirGastosActualizados();
+      this.emitirGastosActualizados(); // Emitir actualizaciones después de editar
     }
   }
 
@@ -126,7 +128,7 @@ export class GastosComponent implements OnInit {
 
     this.actualizarIngresoRestante();
     this.guardarGastos(); // Guardar en localStorage después de eliminar
-    this.emitirGastosActualizados();
+    this.emitirGastosActualizados(); // Emitir actualizaciones después de eliminar
   }
 
   calcularIngresoRestante(): number {
@@ -135,39 +137,36 @@ export class GastosComponent implements OnInit {
     return this.ingresoTotal - (totalGastosPrincipales + totalGastosSecundarios);
   }
 
-  actualizarIngresoRestante() {
-    console.log('Ingreso restante actualizado:', this.calcularIngresoRestante());
-  }
-
-  // Guardar los gastos en localStorage
   guardarGastos() {
     const gastos = {
       principales: this.gastosPrincipales,
       secundarios: this.gastosSecundarios
     };
-    localStorage.setItem('gastos', JSON.stringify(gastos)); // Guardar ambos tipos de gastos juntos
+    localStorage.setItem('gastos', JSON.stringify(gastos)); // Guardar gastos en localStorage
   }
 
-  // Recuperar los gastos de localStorage
+  // Este método recupera los gastos de localStorage
   recuperarGastos() {
-    const gastosGuardados = localStorage.getItem('gastos');
-    if (gastosGuardados) {
-      const { principales, secundarios } = JSON.parse(gastosGuardados);
+    const gastos = localStorage.getItem('gastos');
+    if (gastos) {
+      const { principales, secundarios } = JSON.parse(gastos);
       this.gastosPrincipales = principales || [];
       this.gastosSecundarios = secundarios || [];
     }
   }
 
-  // Guardar el ingreso total en localStorage
   guardarIngresoTotal() {
-    localStorage.setItem('ingresoTotal', JSON.stringify(this.ingresoTotal));
+    localStorage.setItem('ingresoTotal', JSON.stringify(this.ingresoTotal)); // Guardar ingreso total en localStorage
   }
 
-  // Recuperar el ingreso total de localStorage
   recuperarIngresoTotal() {
-    const ingresoTotalGuardado = localStorage.getItem('ingresoTotal');
-    if (ingresoTotalGuardado) {
-      this.ingresoTotal = JSON.parse(ingresoTotalGuardado);
+    const ingresoTotal = localStorage.getItem('ingresoTotal');
+    if (ingresoTotal) {
+      this.ingresoTotal = JSON.parse(ingresoTotal) || 0; // Recuperar ingreso total desde localStorage
     }
+  }
+
+  actualizarIngresoRestante() {
+    this.calcularIngresoRestante(); // Actualizar el ingreso restante
   }
 }

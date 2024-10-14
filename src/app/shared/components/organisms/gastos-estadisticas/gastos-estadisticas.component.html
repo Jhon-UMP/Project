@@ -1,1 +1,5 @@
-<app-gastos></app-gastos>
+<div>
+    <app-gastos (gastosActualizados)="actualizarGastos($event)"></app-gastos>
+    <app-estadisticas *ngIf="gastosActualizados" [gastosActualizados]="gastosActualizados"></app-estadisticas>
+  </div>
+  

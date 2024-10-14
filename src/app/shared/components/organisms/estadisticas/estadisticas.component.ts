@@ -1,62 +1,77 @@
-import { Component, OnInit } from '@angular/core';
-import { GastosService } from 'auth-backend/services/gastos.service';
-
-interface Gasto {
-  nombre: string;
-  monto: number;
-}
+import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { ChartType } from 'angular-google-charts';
 
 @Component({
   selector: 'app-estadisticas',
   templateUrl: './estadisticas.component.html',
   styleUrls: ['./estadisticas.component.scss']
 })
-export class EstadisticasComponent implements OnInit {
-  gastos: Gasto[] = [];
-  chartData: number[] = []; 
-  chartLabels: string[] = []; 
-  chartOptions: any = {
-    responsive: true,
-    plugins: {
-      legend: {
-        position: 'top'
-      },
-      title: {
-        display: true,
-        text: 'Estadísticas de Gastos'
-      }
+export class EstadisticasComponent implements OnInit, OnChanges {
+  @Input() gastosActualizados: {
+    principales: { nombre: string; monto: number }[],
+    secundarios: { nombre: string; monto: number }[]
+  } = { principales: [], secundarios: [] };
+
+  public chartDataPie: any[] = [];
+  public chartDataBar: any[] = [];
+
+  public chartColumns = [
+    { id: 'gasto', label: 'Gasto', type: 'string' },
+    { id: 'monto', label: 'Monto', type: 'number' },
+  ];
+
+  public chartOptionsBar = {
+    hAxis: { title: 'Gasto' },
+    vAxis: { 
+      title: 'Monto en pesos',
+      minValue: 0,
+      maxValue: 600000,
+      ticks: [0, 100000, 200000, 300000, 400000, 500000, 600000]
     },
-    scales: {
-      y: {
-        beginAtZero: true,
-        title: {
-          display: true,
-          text: 'Monto'
-        }
-      }
-    }
+    width: 800,
+    height: 600,
+    colors: ['#808080'],
+    tooltip: { isHtml: true, trigger: 'focus' }
   };
 
-  constructor(private gastosService: GastosService) {}
+  public chartTypeBar: ChartType = ChartType.ColumnChart;
+
+  constructor() {}
 
   ngOnInit(): void {
-    this.obtenerGastosYActualizarGrafica();
+    this.inicializarGraficas(); // Inicializa las gráficas al cargar el componente
   }
 
-  obtenerGastosYActualizarGrafica(): void {
-    this.gastosService.getGastos().subscribe(
-      (response: Gasto[]) => {
-        this.gastos = response;
-        this.actualizarGrafica();
-      },
-      (error) => {
-        console.error('Error al obtener los gastos:', error);
-      }
-    );
+  ngOnChanges(changes: SimpleChanges): void {
+    // Asegurarse de que el cambio de gastosActualizados se haya realizado
+    if (changes['gastosActualizados'] && changes['gastosActualizados'].currentValue) {
+      this.actualizarGraficas();
+    }
   }
 
-  actualizarGrafica(): void {
-    this.chartLabels = this.gastos.map(gasto => gasto.nombre);
-    this.chartData = this.gastos.map(gasto => gasto.monto);
+  inicializarGraficas() {
+    // Inicializa las gráficas con valores predeterminados
+    this.chartDataBar = [['Gasto', 'Monto (en pesos)']];
+  }
+
+  actualizarGraficas() {
+    // Limpiar los datos de las gráficas existentes
+    this.inicializarGraficas();
+
+    // Agregar gastos secundarios a la gráfica de barra
+    if (this.gastosActualizados.secundarios.length > 0) {
+      this.gastosActualizados.secundarios.forEach(gasto => {
+        this.chartDataBar.push([gasto.nombre, gasto.monto]);
+      });
+    }
+
+    // Agregar gastos principales a la gráfica de barra
+    if (this.gastosActualizados.principales.length > 0) {
+      this.gastosActualizados.principales.forEach(gasto => {
+        this.chartDataBar.push([gasto.nombre, gasto.monto]);
+      });
+    }
+
+    console.log('Datos de la gráfica actualizados:', this.chartDataBar);
   }
 }

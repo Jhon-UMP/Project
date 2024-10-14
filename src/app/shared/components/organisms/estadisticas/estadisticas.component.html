@@ -1,9 +1,10 @@
 <div class="chart-container">
-  <canvas baseChart
-          [datasets]="[{ data: chartData, label: 'Gastos' }]"
-          [labels]="chartLabels"
-          [options]="chartOptions"
-          [legend]="true"
-          [chartType]="'bar'">
-  </canvas>
+  <!-- Gráfico de Barras -->
+  <google-chart 
+    [type]="chartTypeBar" 
+    [data]="chartDataBar" 
+    [columns]="chartColumns" 
+    [options]="chartOptionsBar" 
+    class="chart">
+  </google-chart>
 </div>

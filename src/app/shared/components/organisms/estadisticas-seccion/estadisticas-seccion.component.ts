@@ -5,4 +5,6 @@ import { Component } from '@angular/core';
   templateUrl: './estadisticas-seccion.component.html',
   styleUrls: ['./estadisticas-seccion.component.scss']
 })
-export class EstadisticasSeccionComponent {}
+export class EstadisticasSeccionComponent {
+  
+}
