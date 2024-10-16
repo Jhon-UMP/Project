@@ -28,29 +28,31 @@ export class GastosComponent implements OnInit {
   gastosPrincipales: Gasto[] = [];
   gastosSecundarios: Gasto[] = [];
 
+  gastosPredeterminados: Gasto[] = [
+    // Agregar gastos predeterminados si es necesario
+  ];
+
   constructor(private gastosService: GastosService) {}
 
   ngOnInit(): void {
-    this.recuperarGastos(); // Recuperar gastos desde localStorage
-    // Solo cargar gastos del backend si no hay gastos en localStorage
+    this.recuperarGastos();
     if (this.gastosPrincipales.length === 0 && this.gastosSecundarios.length === 0) {
       this.cargarGastos(); 
     }
-    this.recuperarIngresoTotal(); // Recuperar el ingreso total desde localStorage
-    this.emitirGastosActualizados();
+    this.recuperarIngresoTotal();
+    this.emitirGastosActualizados(); // Emitir al inicio
   }
 
-  // Cargar los gastos desde el backend
   cargarGastos() {
     this.gastosService.getGastos().subscribe(
       (data: Gasto[]) => {
-        this.gastosPrincipales = data.filter((g: Gasto) => g.tipo === 'principal');
-        this.gastosSecundarios = data.filter((g: Gasto) => g.tipo === 'secundario');
-        this.emitirGastosActualizados(); // Emitir los gastos al componente de estadísticas
-        this.guardarGastos(); // Guardar los gastos en localStorage
+        this.gastosPrincipales = data.filter(g => g.tipo === 'principal');
+        this.gastosSecundarios = data.filter(g => g.tipo === 'secundario');
+        this.emitirGastosActualizados(); // Emitir después de cargar
+        this.guardarGastos();
       },
       (error) => {
-        console.error('Error al cargar gastos:', error); // Manejo del error al cargar gastos
+        console.error('Error al cargar gastos:', error);
       }
     );
   }
@@ -64,7 +66,7 @@ export class GastosComponent implements OnInit {
     if (!this.isIngresoEditable) {
       this.actualizarIngresoRestante();
       this.guardarIngresoTotal();
-      this.emitirGastosActualizados(); // Emitir actualizaciones después de guardar
+      this.emitirGastosActualizados(); // Emitir después de editar
     }
   }
 
@@ -85,7 +87,6 @@ export class GastosComponent implements OnInit {
         isEditable: false 
       };
 
-      // Agregar el nuevo gasto al arreglo correspondiente
       if (tipo === 'principal') {
         this.gastosPrincipales.push(nuevoGasto);
         this.mostrarAgregarGastoPrincipal = false;
@@ -94,32 +95,42 @@ export class GastosComponent implements OnInit {
         this.mostrarAgregarGastoSecundario = false;
       }
 
-      // Llamar al servicio para agregar el gasto
-      this.gastosService.agregarGasto(nuevoGasto).subscribe(
-        () => {
-          this.guardarGastos(); // Guardar en localStorage
-          this.nuevoGasto = { nombre: '', monto: 0, tipo: '', isEditable: false }; // Reiniciar el gasto nuevo
-          this.actualizarIngresoRestante();
-          this.emitirGastosActualizados(); // Emitir actualizaciones después de agregar
-        },
-        (error) => {
-          console.error('Error al agregar gasto:', error); // Manejo del error al agregar gasto
-        }
-      );
+      this.emitirGastosActualizados(); // Emitir después de agregar
+
+      if (!this.esGastoPredeterminado(nuevoGasto)) {
+        this.gastosService.agregarGasto(nuevoGasto).subscribe(
+          () => {
+            this.guardarGastos();
+            this.nuevoGasto = { nombre: '', monto: 0, tipo: '', isEditable: false };
+            this.actualizarIngresoRestante();
+            this.emitirGastosActualizados(); // Emitir después de la llamada al servicio
+          },
+          (error) => {
+            console.error('Error al agregar gasto:', error);
+          }
+        );
+      } else {
+        this.nuevoGasto = { nombre: '', monto: 0, tipo: '', isEditable: false };
+      }
+
+      this.guardarGastos();
     }
+  }
+
+  esGastoPredeterminado(gasto: Gasto): boolean {
+    return this.gastosPredeterminados.some(predeterminado => predeterminado.nombre === gasto.nombre);
   }
 
   editGasto(gasto: Gasto) {
     gasto.isEditable = !gasto.isEditable;
     if (!gasto.isEditable) {
       this.actualizarIngresoRestante();
-      this.guardarGastos(); // Guardar en localStorage
-      this.emitirGastosActualizados(); // Emitir actualizaciones después de editar
+      this.guardarGastos();
+      this.emitirGastosActualizados(); // Emitir después de editar
     }
   }
 
   deleteGasto(gasto: Gasto, tipo: string) {
-    // Eliminar el gasto del arreglo correspondiente
     if (tipo === 'principal') {
       this.gastosPrincipales = this.gastosPrincipales.filter(item => item !== gasto);
     } else if (tipo === 'secundario') {
@@ -127,46 +138,40 @@ export class GastosComponent implements OnInit {
     }
 
     this.actualizarIngresoRestante();
-    this.guardarGastos(); // Guardar en localStorage después de eliminar
-    this.emitirGastosActualizados(); // Emitir actualizaciones después de eliminar
+    this.guardarGastos();
+    this.emitirGastosActualizados(); // Emitir después de eliminar
   }
 
   calcularIngresoRestante(): number {
-    const totalGastosPrincipales = this.gastosPrincipales.reduce((total, gasto) => total + gasto.monto, 0);
-    const totalGastosSecundarios = this.gastosSecundarios.reduce((total, gasto) => total + gasto.monto, 0);
+    const totalGastosPrincipales = this.gastosPrincipales.reduce((acc, gasto) => acc + gasto.monto, 0);
+    const totalGastosSecundarios = this.gastosSecundarios.reduce((acc, gasto) => acc + gasto.monto, 0);
     return this.ingresoTotal - (totalGastosPrincipales + totalGastosSecundarios);
-  }
-
-  guardarGastos() {
-    const gastos = {
-      principales: this.gastosPrincipales,
-      secundarios: this.gastosSecundarios
-    };
-    localStorage.setItem('gastos', JSON.stringify(gastos)); // Guardar gastos en localStorage
-  }
-
-  // Este método recupera los gastos de localStorage
-  recuperarGastos() {
-    const gastos = localStorage.getItem('gastos');
-    if (gastos) {
-      const { principales, secundarios } = JSON.parse(gastos);
-      this.gastosPrincipales = principales || [];
-      this.gastosSecundarios = secundarios || [];
-    }
-  }
-
-  guardarIngresoTotal() {
-    localStorage.setItem('ingresoTotal', JSON.stringify(this.ingresoTotal)); // Guardar ingreso total en localStorage
   }
 
   recuperarIngresoTotal() {
     const ingresoTotal = localStorage.getItem('ingresoTotal');
-    if (ingresoTotal) {
-      this.ingresoTotal = JSON.parse(ingresoTotal) || 0; // Recuperar ingreso total desde localStorage
-    }
+    this.ingresoTotal = ingresoTotal ? parseFloat(ingresoTotal) : 0;
+  }
+
+  guardarIngresoTotal() {
+    localStorage.setItem('ingresoTotal', this.ingresoTotal.toString());
   }
 
   actualizarIngresoRestante() {
-    this.calcularIngresoRestante(); // Actualizar el ingreso restante
+    const ingresoRestante = this.calcularIngresoRestante();
+    console.log('Ingreso restante:', ingresoRestante);
+  }
+
+  recuperarGastos() {
+    const gastosPrincipales = localStorage.getItem('gastosPrincipales');
+    const gastosSecundarios = localStorage.getItem('gastosSecundarios');
+
+    this.gastosPrincipales = gastosPrincipales ? JSON.parse(gastosPrincipales) : [];
+    this.gastosSecundarios = gastosSecundarios ? JSON.parse(gastosSecundarios) : [];
+  }
+
+  guardarGastos() {
+    localStorage.setItem('gastosPrincipales', JSON.stringify(this.gastosPrincipales));
+    localStorage.setItem('gastosSecundarios', JSON.stringify(this.gastosSecundarios));
   }
 }

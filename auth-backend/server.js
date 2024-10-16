@@ -131,6 +131,7 @@ app.get('/protected', (req, res) => {
 app.get('/api/gastos', (req, res) => {
   connection.query('SELECT * FROM gastos', (err, results) => {
     if (err) {
+      console.error('Error al obtener los gastos:', err);
       return res.status(500).json({ error: 'Error al obtener los gastos' });
     }
     res.status(200).json(results);
@@ -139,18 +140,29 @@ app.get('/api/gastos', (req, res) => {
 
 app.post('/api/gastos', (req, res) => {
   const { nombre, monto } = req.body;
+
+  // Validar que ambos campos estén presentes
   if (!nombre || !monto) {
     return res.status(400).json({ error: 'Nombre y monto son obligatorios' });
   }
-  
+
+  // Validar que el monto sea un número válido
+  if (isNaN(monto) || monto <= 0) {
+    return res.status(400).json({ error: 'El monto debe ser un número válido y mayor que cero' });
+  }
+
+  // Agregar el gasto en la base de datos
   connection.query(
     'INSERT INTO gastos (nombre, monto) VALUES (?, ?)',
     [nombre, monto],
-    (err) => {
+    (err, results) => {
       if (err) {
+        console.error('Error al agregar el gasto en la base de datos:', err);
         return res.status(500).json({ error: 'Error al agregar el gasto' });
       }
-      res.status(201).json({ success: true });
+
+      console.log('Gasto agregado correctamente:', results);
+      res.status(201).json({ success: true, gastoId: results.insertId });
     }
   );
 });

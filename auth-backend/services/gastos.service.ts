@@ -1,5 +1,5 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Observable } from 'rxjs';
 
 @Injectable({
@@ -8,7 +8,7 @@ import { Observable } from 'rxjs';
 export class GastosService {
   private apiUrl = 'http://localhost:3000/gastos'; // URL de tu backend
 
-  constructor(private http: HttpClient) { }
+  constructor(private http: HttpClient) {}
 
   // Método para obtener todos los gastos
   getGastos(): Observable<any> {
@@ -17,6 +17,10 @@ export class GastosService {
 
   // Método para agregar un nuevo gasto
   agregarGasto(gasto: any): Observable<any> {
-    return this.http.post(this.apiUrl, gasto);
+    const headers = new HttpHeaders({
+      'Content-Type': 'application/json'
+    });
+
+    return this.http.post(this.apiUrl, gasto, { headers });
   }
 }

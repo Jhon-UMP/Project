@@ -9,7 +9,6 @@ export class ButtonsSiderComponent {
   sidebarButtons = [
     { label: 'Gastos', link: '/homedos/gastos' },
     { label: 'Plan de Ahorros', link: '/homedos/movimientos' },
-    { label: 'Estadísticas', link: '/homedos/estadisticas' },
     { label: '¿Necesitas Ayuda?', link: '/homedos/ayuda' }
   ];
 

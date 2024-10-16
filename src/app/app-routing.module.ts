@@ -24,7 +24,6 @@ const routes: Routes = [
       { path: '', redirectTo: 'gastos', pathMatch: 'full' }, // Redirigir a gastos por defecto
       { path: 'gastos', component: GastosEstadisticasComponent}, // Componente Gastos
       { path: 'movimientos', component: MovimientosComponent },
-      { path: 'estadisticas', component: EstadisticasComponent },
       { path: 'ayuda', component: AyudaComponent },
       { path: 'servicios', component: ServiciosComponent }
     ]

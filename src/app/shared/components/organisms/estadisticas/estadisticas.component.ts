@@ -1,4 +1,4 @@
-import { Component, Input, OnInit, OnChanges, SimpleChanges } from '@angular/core';
+import { Component, Input, OnChanges, SimpleChanges, ChangeDetectorRef } from '@angular/core';
 import { ChartType } from 'angular-google-charts';
 
 @Component({
@@ -6,13 +6,12 @@ import { ChartType } from 'angular-google-charts';
   templateUrl: './estadisticas.component.html',
   styleUrls: ['./estadisticas.component.scss']
 })
-export class EstadisticasComponent implements OnInit, OnChanges {
+export class EstadisticasComponent implements OnChanges {
   @Input() gastosActualizados: {
     principales: { nombre: string; monto: number }[],
     secundarios: { nombre: string; monto: number }[]
   } = { principales: [], secundarios: [] };
 
-  public chartDataPie: any[] = [];
   public chartDataBar: any[] = [];
 
   public chartColumns = [
@@ -36,42 +35,28 @@ export class EstadisticasComponent implements OnInit, OnChanges {
 
   public chartTypeBar: ChartType = ChartType.ColumnChart;
 
-  constructor() {}
-
-  ngOnInit(): void {
-    this.inicializarGraficas(); // Inicializa las gráficas al cargar el componente
-  }
+  constructor(private cdr: ChangeDetectorRef) {}
 
   ngOnChanges(changes: SimpleChanges): void {
-    // Asegurarse de que el cambio de gastosActualizados se haya realizado
     if (changes['gastosActualizados'] && changes['gastosActualizados'].currentValue) {
       this.actualizarGraficas();
     }
   }
 
-  inicializarGraficas() {
-    // Inicializa las gráficas con valores predeterminados
-    this.chartDataBar = [['Gasto', 'Monto (en pesos)']];
-  }
-
   actualizarGraficas() {
-    // Limpiar los datos de las gráficas existentes
-    this.inicializarGraficas();
+    this.chartDataBar = [['Gasto', 'Monto (en pesos)']];
 
-    // Agregar gastos secundarios a la gráfica de barra
-    if (this.gastosActualizados.secundarios.length > 0) {
-      this.gastosActualizados.secundarios.forEach(gasto => {
-        this.chartDataBar.push([gasto.nombre, gasto.monto]);
-      });
-    }
+    this.gastosActualizados.principales.forEach(gasto => {
+      this.chartDataBar.push([gasto.nombre, gasto.monto]);
+    });
 
-    // Agregar gastos principales a la gráfica de barra
-    if (this.gastosActualizados.principales.length > 0) {
-      this.gastosActualizados.principales.forEach(gasto => {
-        this.chartDataBar.push([gasto.nombre, gasto.monto]);
-      });
-    }
+    this.gastosActualizados.secundarios.forEach(gasto => {
+      this.chartDataBar.push([gasto.nombre, gasto.monto]);
+    });
 
-    console.log('Datos de la gráfica actualizados:', this.chartDataBar);
+    this.chartDataBar = [...this.chartDataBar];
+
+    // Forzar la detección de cambios para actualizar la gráfica
+    this.cdr.detectChanges();
   }
 }
